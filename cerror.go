@@ -19,10 +19,12 @@ type customError struct {
 	appendedErrors []error
 }
 
+// ErrorWithTrace Expose the Error message
 func (c customError) Error() string {
 	return c.message
 }
 
+// ErrorWithTrace Expose the Error message with trace
 func (c customError) ErrorWithTrace() string {
 	var result strings.Builder
 	result.WriteString(c.message)
@@ -39,6 +41,7 @@ func (c customError) ErrorWithTrace() string {
 	return result.String()
 }
 
+// With Append the low or high level Error
 func (c customError) With(err error) Error {
 	if reflect.TypeOf(err).Kind() == reflect.TypeOf(customError{}).Kind() {
 		c.appendedErrors = append(c.appendedErrors, err.(error))
@@ -48,6 +51,7 @@ func (c customError) With(err error) Error {
 	return c
 }
 
+// New Create an instance of Error with Type and Message
 func New(errType ErrorType, message string) Error {
 	return &customError{
 		Type:    errType,

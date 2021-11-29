@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// Error defines custom error
 type Error interface {
 	Error() string
 	ErrorWithTrace() string

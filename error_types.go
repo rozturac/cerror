@@ -4,7 +4,10 @@ package cerror
 type ErrorType string
 
 const (
-	DomainError      ErrorType = "DomainError"      // DomainError contains domain errors
-	BusinessError    ErrorType = "BusinessError"    // DomainError business domain errors
-	ApplicationError ErrorType = "ApplicationError" // DomainError contains application errors
+	// DomainError contains domain errors
+	DomainError ErrorType = "DomainError"
+	// BusinessError business domain errors
+	BusinessError ErrorType = "BusinessError"
+	// ApplicationError contains application errors
+	ApplicationError ErrorType = "ApplicationError"
 )

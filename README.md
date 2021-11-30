@@ -48,16 +48,21 @@ func main() {
 }
 ```
 
-Log message:
+DomainError Log message:
 ``` shell
-Cannot convert the '23x' value to a int.
-strconv.Atoi: parsing "23x": invalid syntax
-[main.main] /Users/rozturac/go/src/github.com/cerror/_examples/cmd/main.go:21
+[InvalidCastError] Cannot convert the '23x' value to int.
 ```
 
-Console message:
+ApplicationError Log message:
 ``` shell
-Cannot convert the '23x' value to a int.
+[InvalidCastError] Cannot convert the '23x' value to int.
+strconv.Atoi: parsing "23x": invalid syntax
+[main.main] /Users/rozturac/go/src/github.com/cerror/_examples/cmd/main.go:32
+```
+
+BusinessError Log message:
+``` shell
+Cannot convert the '23x' value to int.
 ```
 
 ## License

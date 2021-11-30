@@ -9,7 +9,7 @@ import (
 func getStackTraces() string {
 	var traces strings.Builder
 	rpc := make([]uintptr, 10)
-	n := runtime.Callers(4, rpc[:])
+	n := runtime.Callers(5, rpc[:])
 	if n <= 0 {
 		return traces.String()
 	}

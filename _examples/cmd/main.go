@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/rozturac/cerror"
 	"log"
 	"strconv"
@@ -10,7 +11,17 @@ func main() {
 	defer func() {
 		if recover := recover(); recover != nil {
 			if err, ok := recover.(cerror.Error); ok {
-				log.Fatal(err.ErrorWithTrace())
+				switch err.ErrorType() {
+				case cerror.DomainError:
+					log.Fatal(fmt.Sprintf("[%s] %s", err.Code(), err.Error()))
+					break
+				case cerror.ApplicationError:
+					log.Fatal(err.ErrorWithTrace())
+					break
+				case cerror.BusinessError:
+					log.Fatal(err.Error())
+					break
+				}
 			}
 		}
 	}()

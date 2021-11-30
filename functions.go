@@ -23,3 +23,19 @@ func getStackTraces() string {
 	}
 	return traces.String()
 }
+
+func getErrorCode() string {
+	rpc := make([]uintptr, 10)
+	n := runtime.Callers(3, rpc[:])
+	if n <= 0 {
+		return ""
+	}
+
+	frames := runtime.CallersFrames(rpc)
+	frame, _ := frames.Next()
+	if frame.Func != nil && strings.Contains(frame.Function, "Error") {
+		return strings.Split(frame.Function, ".")[2]
+	} else {
+		return "CustomError"
+	}
+}

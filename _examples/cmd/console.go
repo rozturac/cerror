@@ -13,7 +13,7 @@ func main() {
 			if err, ok := recover.(cerror.Error); ok {
 				switch err.ErrorType() {
 				case cerror.DomainError:
-					log.Fatal(fmt.Sprintf("[%s] %s", err.Code(), err.Error()))
+					log.Fatal(fmt.Sprintf("[%s] %s", err.ErrorCode(), err.Error()))
 					break
 				case cerror.ApplicationError:
 					log.Fatal(err.ErrorWithTrace())

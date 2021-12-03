@@ -10,9 +10,11 @@
 Via go packages:
 ```go get github.com/rozturac/cerror```
 
-## Usage
+## Usages
 
-Here is a sample CError uses:
+### Console Applications
+
+Here is a sample CError uses for console applications:
 
 ```go
 import (
@@ -63,6 +65,45 @@ strconv.Atoi: parsing "23x": invalid syntax
 BusinessError Log message:
 ``` shell
 Cannot convert the '23x' value to int.
+```
+
+### Web Service Applications
+
+Here is a sample CError uses for web service applications:
+
+```go
+import (
+	"github.com/rozturac/cerror"
+	"net/http"
+)
+
+type ErrorResponse struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
+
+func main() {
+	handler := http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		panic(cerror.NullReferenceError("testProp"))
+	})
+
+	mapper := func(errorCode, message string, httpStatusCode int) interface{} {
+		return ErrorResponse{
+			Code:    errorCode,
+			Message: message,
+		}
+	}
+
+	http.Handle("/example", cerror.AddErrorHandlingMiddlewareWithMapper(handler, mapper))
+	http.ListenAndServe(":8080", nil)
+}
+
+```
+
+Response:
+```
+Status  : 400
+Body    : { code: "NullReferenceError", message: "testProp is null!" }
 ```
 
 ## License

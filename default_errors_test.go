@@ -2,6 +2,7 @@ package cerror
 
 import (
 	"fmt"
+	"net/http"
 	"strconv"
 	"testing"
 )
@@ -10,11 +11,16 @@ func TestInvalidCastError(t *testing.T) {
 	x := "x25"
 	y, _ := strconv.Atoi(x)
 	err := InvalidCastError(x, y)
-	expectedCode := "InvalidCastError"
+	expectedErrorCode := "InvalidCastError"
+	expectedHttpStatusCode := http.StatusBadRequest
 	expectedMessage := "Cannot convert the 'x25' value to int."
 
-	if err.Code() != expectedCode {
-		t.Error(fmt.Sprintf("Expected code: %s, received: %s", expectedCode, err.Code()))
+	if err.HttpStatusCode() != expectedHttpStatusCode {
+		t.Error(fmt.Sprintf("Expected code: %d, received: %d", expectedHttpStatusCode, err.HttpStatusCode()))
+	}
+
+	if err.ErrorCode() != expectedErrorCode {
+		t.Error(fmt.Sprintf("Expected code: %s, received: %s", expectedErrorCode, err.ErrorCode()))
 	}
 
 	if err.Error() != expectedMessage {
@@ -24,11 +30,16 @@ func TestInvalidCastError(t *testing.T) {
 
 func TestNullReferenceError(t *testing.T) {
 	err := NullReferenceError("x")
-	expectedCode := "NullReferenceError"
+	expectedErrorCode := "NullReferenceError"
+	expectedHttpStatusCode := http.StatusBadRequest
 	expectedMessage := "x is null!"
 
-	if err.Code() != expectedCode {
-		t.Error(fmt.Sprintf("Expected code: %s, received: %s", expectedCode, err.Code()))
+	if err.HttpStatusCode() != expectedHttpStatusCode {
+		t.Error(fmt.Sprintf("Expected code: %d, received: %d", expectedHttpStatusCode, err.HttpStatusCode()))
+	}
+
+	if err.ErrorCode() != expectedErrorCode {
+		t.Error(fmt.Sprintf("Expected code: %s, received: %s", expectedErrorCode, err.ErrorCode()))
 	}
 
 	if err.Error() != expectedMessage {

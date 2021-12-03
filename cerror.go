@@ -1,6 +1,7 @@
 package cerror
 
 import (
+	"net/http"
 	"reflect"
 	"strings"
 )
@@ -8,7 +9,8 @@ import (
 // Error defines custom error
 type Error interface {
 	ErrorType() ErrorType
-	Code() string
+	ErrorCode() string
+	HttpStatusCode() int
 	Error() string
 	ErrorWithTrace() string
 	With(err error) Error
@@ -16,16 +18,22 @@ type Error interface {
 
 type customError struct {
 	Type           ErrorType
-	code           string
 	message        string
+	errorCode      string
+	httpStatusCode int
 	traces         string
 	buildError     error
 	appendedErrors []error
 }
 
-// Code Expose the ErrorCode
-func (c customError) Code() string {
-	return c.code
+// HttpStatusCode Expose the StatusCode
+func (c customError) HttpStatusCode() int {
+	return c.httpStatusCode
+}
+
+// ErrorCode Expose the ErrorCode
+func (c customError) ErrorCode() string {
+	return c.errorCode
 }
 
 // ErrorType Expose the ErrorType
@@ -42,7 +50,7 @@ func (c customError) Error() string {
 func (c customError) ErrorWithTrace() string {
 	var result strings.Builder
 	result.WriteString("[")
-	result.WriteString(c.code)
+	result.WriteString(c.errorCode)
 	result.WriteString("] ")
 	result.WriteString(c.message)
 	result.WriteString("\n")
@@ -70,15 +78,26 @@ func (c customError) With(err error) Error {
 
 // New Create an instance of Error with Type and Message
 func New(errType ErrorType, message string) Error {
-	return NewWithCode(errType, message, getErrorCode())
+	return NewWithErrorCodeAndHttpStatusCode(errType, message, getErrorCode(), http.StatusInternalServerError)
 }
 
-// NewWithCode Create an instance of Error with errType, message, code
-func NewWithCode(errType ErrorType, message, code string) Error {
+// NewWithErrorCode Create an instance of Error with errType, message, code
+func NewWithErrorCode(errType ErrorType, message string, errCode string) Error {
+	return NewWithErrorCodeAndHttpStatusCode(errType, message, errCode, http.StatusInternalServerError)
+}
+
+// NewWithHttpStatusCode Create an instance of Error with errType, message, code
+func NewWithHttpStatusCode(errType ErrorType, message string, httpStatusCode int) Error {
+	return NewWithErrorCodeAndHttpStatusCode(errType, message, getErrorCode(), httpStatusCode)
+}
+
+// NewWithErrorCodeAndHttpStatusCode Create an instance of Error with extra errorCode and httpStatusCode
+func NewWithErrorCodeAndHttpStatusCode(errType ErrorType, message, errorCode string, httpStatusCode int) Error {
 	return &customError{
-		Type:    errType,
-		message: message,
-		traces:  getStackTraces(),
-		code:    code,
+		Type:           errType,
+		message:        message,
+		traces:         getStackTraces(),
+		errorCode:      errorCode,
+		httpStatusCode: httpStatusCode,
 	}
 }

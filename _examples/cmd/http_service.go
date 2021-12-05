@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/rozturac/cerror"
+	"github.com/rozturac/cerror/extensions"
 	"net/http"
 )
 
@@ -22,6 +23,6 @@ func main() {
 		}
 	}
 
-	http.Handle("/example", cerror.AddErrorHandlingMiddlewareWithMapper(handler, mapper))
+	http.Handle("/example", extensions.AddHttpErrorHandlingMiddlewareWithMapper(handler, mapper))
 	http.ListenAndServe(":8080", nil)
 }

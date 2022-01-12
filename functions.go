@@ -34,7 +34,8 @@ func getErrorCode() string {
 	frames := runtime.CallersFrames(rpc)
 	frame, _ := frames.Next()
 	if frame.Func != nil && strings.Contains(frame.Function, "Error") {
-		return strings.Split(frame.Function, ".")[2]
+		list := strings.Split(frame.Function, ".")
+		return list[len(list)-1]
 	} else {
 		return "CustomError"
 	}
